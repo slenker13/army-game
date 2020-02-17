@@ -8,7 +8,7 @@
 class Player: public Actor {
     public:
         // Maximum axis velocity of the player
-        static const int PLAYER_VEL = 10;
+        static const int PLAYER_VEL = 5;
 
         // Initialize player
         Player();

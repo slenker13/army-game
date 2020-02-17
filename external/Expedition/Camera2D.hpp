@@ -13,11 +13,11 @@ namespace Expedition {
             void updatePosition(int x, int y);
 
             // Getter
-            SDL_Rect getCameraRect();
+            SDL_Rect* getCameraRect();
         
         private:
             // Camera area
-            SDL_Rect m_cameraRect;
+            SDL_Rect* m_cameraRect;
 
             // Level Dimension
             int m_levelWidth;

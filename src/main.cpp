@@ -22,7 +22,7 @@ void close();
 Expedition::Window g_window;
 
 // Scene textues
-Expedition::Texture g_levelGrid;
+Expedition::Texture g_bgTexture;
 
 void close() {
     // Destroy window (destroys renderer)
@@ -35,7 +35,7 @@ bool loadMedia() {
     bool success = true;
 
     // Load level grid
-    if (!g_levelGrid.loadFromFile("data/level-grid.png", g_window.getRenderer())) {
+    if (!g_bgTexture.loadFromFile("data/background.png", g_window.getRenderer())) {
         printf("ERROR: Unable to render level grid texture. SDL Error: %s\n", SDL_GetError());
         success = false;
     }
@@ -85,14 +85,14 @@ int main (int argc, char* args[]) {
                         g_window.clearScreen();
 
                         // Render background
-                        g_levelGrid.render(0, 0);
+                        g_bgTexture.render(0, 0, camera.getCameraRect());
 
                         // Update
                         player.move(LEVEL_WIDTH, LEVEL_HEIGHT);
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
 
                         // Render
-                        player.render(camera.getCameraRect().x, camera.getCameraRect().y);
+                        player.render(camera.getCameraRect()->x, camera.getCameraRect()->y);
 
                         // Update screen
                         g_window.render();
