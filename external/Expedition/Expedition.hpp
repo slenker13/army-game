@@ -5,6 +5,7 @@
 #include "Texture.hpp"
 #include "Timer.hpp"
 #include "Window.hpp"
+#include "Camera2D.hpp"
 
 namespace Expedition {
     // Initializes SDL systems
