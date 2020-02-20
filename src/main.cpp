@@ -54,17 +54,20 @@ int main (int argc, char* args[]) {
             if (!loadMedia()) {
                 printf("ERROR: Failed to load media.\n");
             } else {
-                // Main look flag
+                // Main loop flag
                 bool quit = false;
 
                 // Event handler
                 SDL_Event e;
 
+                // Initialize texture cache
+                Expedition::TextureCache g_textureCache(g_window.getRenderer());
+
                 // Camera
                 Expedition::Camera2D camera(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT);
 
                 // Player
-                Player player(0, 0, "data/smile.png", g_window.getRenderer());
+                Player player(0, 0, g_textureCache.getTexture("data/smile.png"));
 
                 // GAME LOOP
                 while (!quit) {

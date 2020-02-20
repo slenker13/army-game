@@ -8,7 +8,7 @@ class Actor: public Entity {
         // Inits variables
         Actor();
         Actor(int x, int y);
-        Actor(int x, int y, std::string texturePath, SDL_Renderer* renderer);
+        Actor(int x, int y, Expedition::Texture* texture);
 
         // Moves the actor
         void move(int levelWidth, int levelHeight);

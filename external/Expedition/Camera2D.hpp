@@ -4,6 +4,7 @@
 #include <SDL2/SDL_rect.h>
 
 namespace Expedition {
+    // 2D camera object class
     class Camera2D {
         public:
             // Init variables
@@ -17,7 +18,7 @@ namespace Expedition {
         
         private:
             // Camera area
-            SDL_Rect* m_cameraRect;
+            SDL_Rect m_cameraRect;
 
             // Level Dimension
             int m_levelWidth;

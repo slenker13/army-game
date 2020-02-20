@@ -4,7 +4,7 @@ Player::Player() {}
 
 Player::Player(int x, int y) : Actor(x, y) {}
 
-Player::Player(int x, int y, std::string texturePath, SDL_Renderer* renderer) : Actor(x, y, texturePath, renderer) {}
+Player::Player(int x, int y, Expedition::Texture* texture) : Actor(x, y, texture) {}
 
 void Player::handleEvent(SDL_Event& e) {
     // Key pressed

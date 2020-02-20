@@ -10,13 +10,10 @@ class Entity {
         // Init entity
         Entity();
         Entity(int x, int y);
-        Entity(int x, int y, std::string texturePath, SDL_Renderer* renderer);
-
-        // Deallocates texture
-        ~Entity();
+        Entity(int x, int y, Expedition::Texture* texture);
 
         // Loads texture
-        bool initTexture(std::string texturePath, SDL_Renderer* renderer);
+        void setTexture(Expedition::Texture* texture);
 
         // Renders the entity relative to the camera
         void render(int camX, int camY);
@@ -37,7 +34,7 @@ class Entity {
         int m_height;
 
         // Entity texture
-        Expedition::Texture m_texture;
+        Expedition::Texture* m_texture;
 };
 
 #endif

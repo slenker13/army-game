@@ -13,7 +13,7 @@ class Player: public Actor {
         // Initialize player
         Player();
         Player(int x, int y);
-        Player(int x, int y, std::string texturePath, SDL_Renderer* renderer);
+        Player(int x, int y, Expedition::Texture* texture);
 
         // Handle input events
         void handleEvent(SDL_Event& e);

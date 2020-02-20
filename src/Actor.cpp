@@ -4,8 +4,8 @@ Actor::Actor() : m_velX(0), m_velY(0) {}
 
 Actor::Actor(int x, int y) : Entity(x, y), m_velX(0), m_velY(0) {}
 
-Actor::Actor(int x, int y, std::string texturePath, SDL_Renderer* renderer) : 
-    Entity(x, y, texturePath, renderer), m_velX(0), m_velY(0) {}
+Actor::Actor(int x, int y, Expedition::Texture* texture) : 
+    Entity(x, y, texture), m_velX(0), m_velY(0) {}
 
 void Actor::move(int levelWidth, int levelHeight) {
     // Move left or right
