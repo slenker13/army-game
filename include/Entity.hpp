@@ -16,7 +16,7 @@ class Entity {
         void setTexture(Expedition::Texture* texture);
 
         // Renders the entity relative to the camera
-        void render(int camX, int camY);
+        void render(int camX, int camY, double angle = 0.0);
 
         // Getters
         int getPosX();

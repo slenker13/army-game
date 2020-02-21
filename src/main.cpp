@@ -69,6 +69,8 @@ int main (int argc, char* args[]) {
                 // Player
                 Player player(0, 0, g_textureCache.getTexture("data/smile.png"));
 
+                double angle = 0.0;
+
                 // GAME LOOP
                 while (!quit) {
                     // Handle events on queue
@@ -94,8 +96,20 @@ int main (int argc, char* args[]) {
                         player.move(LEVEL_WIDTH, LEVEL_HEIGHT);
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
 
+                        // Get mouse position
+                        int x, y;
+                        SDL_GetMouseState(&x, &y);
+
+                        // Get player center
+                        int centerX = player.getPosX() - camera.getCameraRect()->x + (player.getWidth() / 2);
+                        int centerY = player.getPosY() - camera.getCameraRect()->y + (player.getHeight() / 2);
+
+                        // Calculate angle
+                        angle = atan2(y - centerY, x - centerX) * 180 / M_PI + 90;
+
                         // Render
-                        player.render(camera.getCameraRect()->x, camera.getCameraRect()->y);
+                        printf("%f\n", angle);
+                        player.render(camera.getCameraRect()->x, camera.getCameraRect()->y, angle);
 
                         // Update screen
                         g_window.render();
