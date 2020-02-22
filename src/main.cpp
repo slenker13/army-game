@@ -6,6 +6,7 @@
 #include "Expedition/Expedition.hpp"
 
 #include "Player.hpp"
+#include "Wall.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 960;
@@ -66,10 +67,20 @@ int main (int argc, char* args[]) {
                 // Camera
                 Expedition::Camera2D camera(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT);
 
-                // Player
-                Player player(0, 0, g_textureCache.getTexture("data/player.png"));
+                // Entity vector
+                std::vector<Entity*> entityList;
 
+                // Player
+                Player player(LEVEL_WIDTH / 2, LEVEL_HEIGHT / 2, g_textureCache.getTexture("data/player.png"));
+                entityList.push_back(&player);
                 double angle = 0.0;
+
+                // Walls
+                SDL_Color black = {0x00, 0x00, 0x00, 0xFF};
+                Wall wall1(600, 300, 40, 400, black);
+                entityList.push_back(&wall1);
+                Wall wall2(1200, 300, 40, 400, black);
+                entityList.push_back(&wall2);
 
                 // GAME LOOP
                 while (!quit) {
@@ -93,7 +104,7 @@ int main (int argc, char* args[]) {
                         g_bgTexture.render(0, 0, camera.getCameraRect());
 
                         // Update
-                        player.move(LEVEL_WIDTH, LEVEL_HEIGHT);
+                        player.move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
 
                         // Get mouse position
@@ -109,6 +120,10 @@ int main (int argc, char* args[]) {
 
                         // Render
                         player.render(camera.getCameraRect()->x, camera.getCameraRect()->y, angle);
+
+                        // Render walls
+                        wall1.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
+                        wall2.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
 
                         // Update screen
                         g_window.render();

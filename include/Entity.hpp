@@ -10,6 +10,7 @@ class Entity {
         // Init entity
         Entity();
         Entity(int x, int y);
+        Entity(int x, int y, int width, int height);
         Entity(int x, int y, Expedition::Texture* texture);
 
         // Loads texture
@@ -17,6 +18,9 @@ class Entity {
 
         // Renders the entity relative to the camera
         void render(int camX, int camY, double angle = 0.0);
+
+        // Checks the collision between this and another entity
+        bool checkCollision(Entity* other);
 
         // Getters
         int getPosX();
@@ -32,6 +36,9 @@ class Entity {
         // Entity dimensions
         int m_width;
         int m_height;
+
+        // Collision box
+        SDL_Rect m_collider;
 
         // Entity texture
         Expedition::Texture* m_texture;

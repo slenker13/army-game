@@ -3,6 +3,8 @@
 
 #include "Entity.hpp"
 
+#include <vector>
+
 class Actor: public Entity {
     public:
         // Inits variables
@@ -11,7 +13,7 @@ class Actor: public Entity {
         Actor(int x, int y, Expedition::Texture* texture);
 
         // Moves the actor
-        void move(int levelWidth, int levelHeight);
+        void move(int levelWidth, int levelHeight, std::vector<Entity*> entities);
 
         // Collision with another entity
         bool checkCollision(Entity e);
