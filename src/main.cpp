@@ -67,7 +67,7 @@ int main (int argc, char* args[]) {
                 Expedition::Camera2D camera(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT);
 
                 // Player
-                Player player(0, 0, g_textureCache.getTexture("data/smile.png"));
+                Player player(0, 0, g_textureCache.getTexture("data/player.png"));
 
                 double angle = 0.0;
 
@@ -108,7 +108,6 @@ int main (int argc, char* args[]) {
                         angle = atan2(y - centerY, x - centerX) * 180 / M_PI + 90;
 
                         // Render
-                        printf("%f\n", angle);
                         player.render(camera.getCameraRect()->x, camera.getCameraRect()->y, angle);
 
                         // Update screen
