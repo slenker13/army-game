@@ -14,6 +14,9 @@ const int SCREEN_HEIGHT = 720;
 const int LEVEL_WIDTH = 1920;
 const int LEVEL_HEIGHT = 1440;
 
+// Fixed delta time (60 FPS)
+const double dt = 1 / 60.0;
+
 // Loads media from file
 bool loadMedia();
 
@@ -49,7 +52,7 @@ int main (int argc, char* args[]) {
     if (!Expedition::init()) {
         printf("ERROR: Failed to initialize.\n");
     } else {
-        if (!g_window.init("Game Window", SCREEN_WIDTH, SCREEN_HEIGHT, false)) {
+        if (!g_window.init("Game Window", SCREEN_WIDTH, SCREEN_HEIGHT, false, false)) {
             printf("ERROR: Window initialization failed.\n");
         } else {
             if (!loadMedia()) {
@@ -70,6 +73,10 @@ int main (int argc, char* args[]) {
                 // Entity vector
                 std::vector<Entity*> entityList;
 
+                // Timestep timer
+                Expedition::Timer stepTimer;
+                double accumulator = 0.0;
+
                 // Player
                 Player player(LEVEL_WIDTH / 2, LEVEL_HEIGHT / 2, g_textureCache.getTexture("data/player.png"));
                 entityList.push_back(&player);
@@ -84,50 +91,59 @@ int main (int argc, char* args[]) {
 
                 // GAME LOOP
                 while (!quit) {
-                    // Handle events on queue
-                    while (SDL_PollEvent(&e) != 0) {
-                        // Close window
-                        if (e.type == SDL_QUIT) {
-                            quit = true;
+                    // Get timestep
+                    float timestep = stepTimer.getTicks() / 1000.0f;
+                    accumulator += timestep;
+                    // Restart timer
+                    stepTimer.start();
+
+                    // Print FPS
+                    // if (timestep != 0) {
+                    //     printf("FPS: %f\n", 1.0f / timestep);
+                    // }
+
+                    /******** UPDATE ********/
+                    while (accumulator >= dt) {
+                        // Handle events on queue
+                        while (SDL_PollEvent(&e) != 0) {
+                            // Close window
+                            if (e.type == SDL_QUIT) {
+                                quit = true;
+                            }
+
+                            g_window.handleEvent(e);
+                            player.handleEvent(e);
                         }
-
-                        g_window.handleEvent(e);
-                        player.handleEvent(e);
-                    }
-
-                    // Only draw if window is not minimized
-                    if (!g_window.isMinimized()) {
-                        // Clear screen
-                        g_window.clearScreen();
-
-                        // Render background
-                        g_bgTexture.render(0, 0, camera.getCameraRect());
-
-                        // Update
+                        
+                        // Player movement
                         player.move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
 
-                        // Get mouse position
+                        // Calculate rotation angle
                         int x, y;
                         SDL_GetMouseState(&x, &y);
-
-                        // Get player center
                         int centerX = player.getPosX() - camera.getCameraRect()->x + (player.getWidth() / 2);
                         int centerY = player.getPosY() - camera.getCameraRect()->y + (player.getHeight() / 2);
-
-                        // Calculate angle
                         angle = atan2(y - centerY, x - centerX) * 180 / M_PI + 90;
 
-                        // Render
-                        player.render(camera.getCameraRect()->x, camera.getCameraRect()->y, angle);
-
-                        // Render walls
-                        wall1.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
-                        wall2.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
-
-                        // Update screen
-                        g_window.render();
+                        // Decrease accumulator
+                        accumulator -= dt;
                     }
+                    /****************/
+
+                    /******** RENDER ********/
+                    // Clear screen
+                    g_window.clearScreen();
+
+                    // Render scene
+                    g_bgTexture.render(0, 0, camera.getCameraRect());
+                    player.render(camera.getCameraRect()->x, camera.getCameraRect()->y, angle);
+                    wall1.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
+                    wall2.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
+
+                    // Update screen
+                    g_window.render();
+                    /****************/
                 }
             }
         }

@@ -14,7 +14,7 @@ namespace Expedition {
             Window();
 
             // Create window
-            bool init(std::string name, int width, int height, bool resizable);
+            bool init(std::string name, int width, int height, bool resizable, bool vsync);
 
             // Delete window
             void free();
