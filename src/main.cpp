@@ -126,14 +126,26 @@ int main (int argc, char* args[]) {
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
                         camX = camera.getCameraRect()->x;
                         camY = camera.getCameraRect()->y;
+
+                        // Calculate rotation angle
+                        player.calculateAngle(camX, camY);
                         
                         // Move bullets
                         for (Bullet* bullet : Bullet::bulletList) {
                             bullet->move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
                         }
-
-                        // Calculate rotation angle
-                        player.calculateAngle(camX, camY);
+                        
+                        // Remove bullets
+                        std::vector<Bullet*>::iterator it = Bullet::bulletList.begin();
+                        while (it != Bullet::bulletList.end()) {
+                            Bullet* bullet = *it;
+                            if (bullet->isRemoved()) {
+                                it = Bullet::bulletList.erase(it);
+                                delete bullet;
+                            } else {
+                                it++;
+                            }
+                        }
 
                         // Decrease accumulator
                         accumulator -= dt;
