@@ -7,6 +7,7 @@
 
 #include "Player.hpp"
 #include "Wall.hpp"
+#include "Bullet.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 960;
@@ -15,7 +16,7 @@ const int LEVEL_WIDTH = 1920;
 const int LEVEL_HEIGHT = 1440;
 
 // Fixed delta time (60 FPS)
-const double dt = 1 / 60.0;
+const double dt = 1 / 120.0;
 
 // Loads media from file
 bool loadMedia();
@@ -32,6 +33,10 @@ void close() {
     // Destroy window (destroys renderer)
     g_window.free();
 
+    // Free background texture
+    g_bgTexture.free();
+
+    // Close engine (closes SDL)
     Expedition::close();
 }
 
@@ -69,6 +74,8 @@ int main (int argc, char* args[]) {
 
                 // Camera
                 Expedition::Camera2D camera(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT);
+                int camX = camera.getCameraRect()->x;
+                int camY = camera.getCameraRect()->y;
 
                 // Entity vector
                 std::vector<Entity*> entityList;
@@ -80,7 +87,6 @@ int main (int argc, char* args[]) {
                 // Player
                 Player player(LEVEL_WIDTH / 2, LEVEL_HEIGHT / 2, g_textureCache.getTexture("data/player.png"));
                 entityList.push_back(&player);
-                double angle = 0.0;
 
                 // Walls
                 SDL_Color black = {0x00, 0x00, 0x00, 0xFF};
@@ -114,17 +120,20 @@ int main (int argc, char* args[]) {
                             g_window.handleEvent(e);
                             player.handleEvent(e);
                         }
-                        
-                        // Player movement
+
+                        // Player update
                         player.move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
+                        camX = camera.getCameraRect()->x;
+                        camY = camera.getCameraRect()->y;
+                        
+                        // Move bullets
+                        for (Bullet* bullet : Bullet::bulletList) {
+                            bullet->move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
+                        }
 
                         // Calculate rotation angle
-                        int x, y;
-                        SDL_GetMouseState(&x, &y);
-                        int centerX = player.getPosX() - camera.getCameraRect()->x + (player.getWidth() / 2);
-                        int centerY = player.getPosY() - camera.getCameraRect()->y + (player.getHeight() / 2);
-                        angle = atan2(y - centerY, x - centerX) * 180 / M_PI + 90;
+                        player.calculateAngle(camX, camY);
 
                         // Decrease accumulator
                         accumulator -= dt;
@@ -137,9 +146,13 @@ int main (int argc, char* args[]) {
 
                     // Render scene
                     g_bgTexture.render(0, 0, camera.getCameraRect());
-                    player.render(camera.getCameraRect()->x, camera.getCameraRect()->y, angle);
-                    wall1.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
-                    wall2.render(camera.getCameraRect()->x, camera.getCameraRect()->y, g_window.getRenderer());
+                    player.render(camX, camY);
+                    wall1.render(camX, camY, g_window.getRenderer());
+                    wall2.render(camX, camY, g_window.getRenderer());
+
+                    for (Bullet* bullet : Bullet::bulletList) {
+                        bullet->render(camX, camY, g_window.getRenderer());
+                    }
 
                     // Update screen
                     g_window.render();
@@ -148,6 +161,7 @@ int main (int argc, char* args[]) {
             }
         }
     }
+    close();
 
     return 0;
 }

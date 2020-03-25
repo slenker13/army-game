@@ -15,9 +15,6 @@ class Actor: public Entity {
         // Moves the actor
         void move(int levelWidth, int levelHeight, std::vector<Entity*> entities);
 
-        // Collision with another entity
-        bool checkCollision(Entity e);
-
     protected:
         // Velocity of the actor
         int m_velX;
