@@ -23,17 +23,23 @@ void Player::render(int camX, int camY) {
 }
 
 void Player::shoot() {
-    // Calculate muzzle position
-    // Center coordinates
-    int x = m_posX + m_width / 2;
-    int y = m_posY + m_height / 2;
-    // Move towards mouse
-    int distance = m_width / 2;
-    double angleRads = m_angle * M_PI / 180.0;
-    x += distance * cos(angleRads);
-    y += distance * sin(angleRads);
-    
-    Bullet::bulletList.push_back(new Bullet(x, y, m_angle));
+    if (m_shooting && (!m_shootTimer.isStarted() || m_shootTimer.getTicks() > 400)) {
+        // Calculate muzzle position
+        // Center coordinates
+        int x = m_posX + m_width / 2 - 2;
+        int y = m_posY + m_height / 2 - 2;
+        // Move towards mouse
+        int distance = m_width / 2;
+        double angleRads = m_angle * M_PI / 180.0;
+        x += distance * cos(angleRads);
+        y += distance * sin(angleRads);
+        
+        // Create new bullet and add it to the list
+        Bullet::bulletList.push_back(new Bullet(x, y, m_angle));
+
+        // Restart timer
+        m_shootTimer.start();
+    }
 }
 
 void Player::handleEvent(SDL_Event& e) {
@@ -58,6 +64,10 @@ void Player::handleEvent(SDL_Event& e) {
 
     // Mouse click
     if (e.type == SDL_MOUSEBUTTONDOWN) {
-        shoot();
+        m_shooting = true;
+    }
+    if (e.type == SDL_MOUSEBUTTONUP) {
+        m_shooting = false;
+        m_shootTimer.stop();
     }
 }

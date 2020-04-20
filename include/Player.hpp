@@ -32,6 +32,12 @@ class Player: public Actor {
     private:
         // Rotation angle
         double m_angle;
+
+        // Flag true if shooting
+        bool m_shooting;
+
+        // Timer for automatic fire
+        Expedition::Timer m_shootTimer;
 };
 
 #endif

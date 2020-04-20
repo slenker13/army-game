@@ -9,8 +9,8 @@ std::vector<Bullet*> Bullet::bulletList;
 Bullet::Bullet(int x, int y, double angle) : Entity(x, y, 4, 4), m_remove(false) {
     // Calculate X and Y velocities from angle
     double angleRads = angle * M_PI / 180.0;
-    m_velX = BULLET_VEL * cos(angleRads);
-    m_velY = BULLET_VEL * sin(angleRads);
+    m_velX = (double)BULLET_VEL * cos(angleRads);
+    m_velY = (double)BULLET_VEL * sin(angleRads);
 }
 
 void Bullet::render(int camX, int camY, SDL_Renderer* renderer) {
@@ -22,7 +22,7 @@ void Bullet::render(int camX, int camY, SDL_Renderer* renderer) {
 
 void Bullet::move(int levelWidth, int levelHeight, std::vector<Entity*> entities) {
     // Move left or right
-    m_posX += m_velX;
+    m_posX = round(m_posX + m_velX);
     m_collider.x = m_posX;
 
     // Keep in bounds
