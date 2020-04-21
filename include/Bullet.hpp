@@ -24,16 +24,10 @@ class Bullet: public Entity {
         // Moves the bullet at a constant velocity
         void move(int levelWidth, int levelHeight, std::vector<Entity*> entities);
 
-        // Get remove flag
-        bool isRemoved();
-
     private:
         // X and Y velocity calculated from the angle
         double m_velX;
         double m_velY;
-
-        // Deletion flag
-        bool m_remove;
 };
 
 #endif

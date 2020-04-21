@@ -1,6 +1,6 @@
 #include "Wall.hpp"
 
-Wall::Wall(int x, int y, int width, int height, SDL_Color color) : Entity(x, y, width, height), m_color(color) {
+Wall::Wall(int x, int y, int width, int height, SDL_Color color) : Entity(EntityType::wall, x, y, width, height), m_color(color) {
     m_renderRect.x = x;
     m_renderRect.y = y;
     m_renderRect.w = width;

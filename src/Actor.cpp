@@ -1,12 +1,13 @@
 #include "Actor.hpp"
 
-Actor::Actor() : m_velX(0), m_velY(0) {}
+Actor::Actor(EntityType type) : Entity(type), m_velX(0), m_velY(0) {}
 
-Actor::Actor(int x, int y) : Entity(x, y), m_velX(0), m_velY(0) {}
+Actor::Actor(EntityType type, int x, int y) : Entity(type, x, y), m_velX(0), m_velY(0) {}
 
-Actor::Actor(int x, int y, Expedition::Texture* texture) : 
-    Entity(x, y, texture), m_velX(0), m_velY(0) {}
+Actor::Actor(EntityType type, int x, int y, Expedition::Texture* texture) : 
+    Entity(type, x, y, texture), m_velX(0), m_velY(0) {}
 
+// UNUSED
 void Actor::move(int levelWidth, int levelHeight, std::vector<Entity*> entities) {
     // Move left or right
     m_posX += m_velX;
@@ -25,7 +26,7 @@ void Actor::move(int levelWidth, int levelHeight, std::vector<Entity*> entities)
         }
     }
 
-    // Move the dot up or down
+    // Move up or down
     m_posY += m_velY;
     m_collider.y = m_posY;
 

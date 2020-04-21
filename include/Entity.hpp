@@ -5,13 +5,21 @@
 
 #include "Expedition/Texture.hpp"
 
+// Enum for entity type
+enum class EntityType {
+    player,
+    enemy,
+    wall,
+    bullet
+};
+
 class Entity {
     public:
         // Init entity
-        Entity();
-        Entity(int x, int y);
-        Entity(int x, int y, int width, int height);
-        Entity(int x, int y, Expedition::Texture* texture);
+        Entity(EntityType type);
+        Entity(EntityType type, int x, int y);
+        Entity(EntityType type, int x, int y, int width, int height);
+        Entity(EntityType type, int x, int y, Expedition::Texture* texture);
 
         // Loads texture
         void setTexture(Expedition::Texture* texture);
@@ -27,8 +35,13 @@ class Entity {
         int getPosY();
         int getWidth();
         int getHeight();
+        EntityType getType();
+        bool isRemoved();
 
     protected:
+        // Entity type
+        EntityType m_type;
+
         // Entity offsets
         int m_posX;
         int m_posY;
@@ -42,6 +55,9 @@ class Entity {
 
         // Entity texture
         Expedition::Texture* m_texture;
+
+        // Deletion flag
+        bool m_remove;
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "Player.hpp"
 #include "Wall.hpp"
 #include "Bullet.hpp"
+#include "Enemy.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 960;
@@ -95,6 +96,9 @@ int main (int argc, char* args[]) {
                 Wall wall2(1200, 300, 40, 400, black);
                 entityList.push_back(&wall2);
 
+                Enemy* enemy = new Enemy(player.getPosX(), player.getPosY() - 100, g_textureCache.getTexture("data/enemy.png"));
+                entityList.push_back(enemy);
+
                 // GAME LOOP
                 while (!quit) {
                     // Get timestep
@@ -123,6 +127,7 @@ int main (int argc, char* args[]) {
 
                         // Player update
                         player.move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
+                        player.shoot();
                         camera.updatePosition((player.getPosX() + player.getWidth() / 2) - SCREEN_WIDTH / 2, (player.getPosY() + player.getHeight() / 2) - SCREEN_HEIGHT / 2);
                         camX = camera.getCameraRect()->x;
                         camY = camera.getCameraRect()->y;
@@ -134,16 +139,35 @@ int main (int argc, char* args[]) {
                         for (Bullet* bullet : Bullet::bulletList) {
                             bullet->move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
                         }
+
+                        // Move enemies
+                        for (Entity* entity : entityList) {
+                            if (entity->getType() == EntityType::enemy) {
+                                static_cast<Enemy*>(entity)->move(LEVEL_WIDTH, LEVEL_HEIGHT, entityList);
+                            }
+                        }   
+
+                        // Remove entities
+                        std::vector<Entity*>::iterator entityIt = entityList.begin();
+                        while (entityIt != entityList.end()) {
+                            Entity* entity = *entityIt;
+                            if (entity->isRemoved()) {
+                                entityIt = entityList.erase(entityIt);
+                                delete entity;
+                            } else {
+                                entityIt++;
+                            }
+                        }
                         
                         // Remove bullets
-                        std::vector<Bullet*>::iterator it = Bullet::bulletList.begin();
-                        while (it != Bullet::bulletList.end()) {
-                            Bullet* bullet = *it;
+                        std::vector<Bullet*>::iterator bulletIt = Bullet::bulletList.begin();
+                        while (bulletIt != Bullet::bulletList.end()) {
+                            Bullet* bullet = *bulletIt;
                             if (bullet->isRemoved()) {
-                                it = Bullet::bulletList.erase(it);
+                                bulletIt = Bullet::bulletList.erase(bulletIt);
                                 delete bullet;
                             } else {
-                                it++;
+                                bulletIt++;
                             }
                         }
 
@@ -158,10 +182,26 @@ int main (int argc, char* args[]) {
 
                     // Render scene
                     g_bgTexture.render(0, 0, camera.getCameraRect());
-                    player.render(camX, camY);
-                    wall1.render(camX, camY, g_window.getRenderer());
-                    wall2.render(camX, camY, g_window.getRenderer());
 
+                    // Render entities
+                    for (Entity* entity : entityList) {
+                        switch (entity->getType()) {
+                            case EntityType::player:
+                                static_cast<Player*>(entity)->render(camX, camY);
+                                break;
+                            case EntityType::wall:
+                                static_cast<Wall*>(entity)->render(camX, camY, g_window.getRenderer());
+                                break;
+                            case EntityType::enemy:
+                                static_cast<Enemy*>(entity)->render(camX, camY);
+                                break;
+                            case EntityType::bullet:
+                                // Do nothing
+                                break;
+                        }
+                    }
+
+                    // Render bullets
                     for (Bullet* bullet : Bullet::bulletList) {
                         bullet->render(camX, camY, g_window.getRenderer());
                     }

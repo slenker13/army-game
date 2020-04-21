@@ -4,11 +4,11 @@
 
 #include "Bullet.hpp"
 
-Player::Player() : m_angle(0.0) {}
+Player::Player() : Actor(EntityType::player), m_angle(0.0) {}
 
-Player::Player(int x, int y) : Actor(x, y), m_angle(0.0) {}
+Player::Player(int x, int y) : Actor(EntityType::player, x, y), m_angle(0.0) {}
 
-Player::Player(int x, int y, Expedition::Texture* texture) : Actor(x, y, texture), m_angle(0.0) {}
+Player::Player(int x, int y, Expedition::Texture* texture) : Actor(EntityType::player, x, y, texture), m_angle(0.0) {}
 
 void Player::calculateAngle(int camX, int camY) {
     int x, y;

@@ -8,9 +8,9 @@
 class Actor: public Entity {
     public:
         // Inits variables
-        Actor();
-        Actor(int x, int y);
-        Actor(int x, int y, Expedition::Texture* texture);
+        Actor(EntityType type);
+        Actor(EntityType type, int x, int y);
+        Actor(EntityType type, int x, int y, Expedition::Texture* texture);
 
         // Moves the actor
         void move(int levelWidth, int levelHeight, std::vector<Entity*> entities);

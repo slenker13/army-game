@@ -2,19 +2,19 @@
 
 #include <SDL2/SDL_render.h>
 
-Entity::Entity() : m_posX(0), m_posY(0), m_width(0), m_height(0) {
+Entity::Entity(EntityType type) : m_type(type), m_posX(0), m_posY(0), m_width(0), m_height(0), m_remove(false) {
     m_collider = {0, 0, 0, 0};
 }
 
-Entity::Entity(int x, int y) : m_posX(x), m_posY(y), m_width(0), m_height(0) {
+Entity::Entity(EntityType type, int x, int y) : m_type(type), m_posX(x), m_posY(y), m_width(0), m_height(0), m_remove(false) {
     m_collider = {x, y, 0, 0};
 }
 
-Entity::Entity(int x, int y, int width, int height) : m_posX(x), m_posY(y), m_width(width), m_height(height) {
+Entity::Entity(EntityType type, int x, int y, int width, int height) : m_type(type), m_posX(x), m_posY(y), m_width(width), m_height(height), m_remove(false) {
     m_collider = {x, y, width, height};
 }
 
-Entity::Entity(int x, int y, Expedition::Texture* texture) : m_posX(x), m_posY(y), m_texture(texture) {
+Entity::Entity(EntityType type, int x, int y, Expedition::Texture* texture) : m_type(type), m_posX(x), m_posY(y), m_texture(texture), m_remove(false) {
     m_width = texture->getWidth();
     m_height = texture->getHeight();
     m_collider = {x, y, m_width, m_height};
@@ -62,6 +62,8 @@ bool Entity::checkCollision(Entity* other) {
 }
 
 int Entity::getPosX() { return m_posX; }
-int Entity::getPosY() {return m_posY; }
+int Entity::getPosY() { return m_posY; }
 int Entity::getWidth() { return m_width; }
-int Entity::getHeight() {return m_height; }
+int Entity::getHeight() { return m_height; }
+EntityType Entity::getType() { return m_type; }
+bool Entity::isRemoved() { return m_remove; }
