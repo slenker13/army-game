@@ -28,6 +28,10 @@ class Bullet: public Entity {
         // X and Y velocity calculated from the angle
         double m_velX;
         double m_velY;
+
+        // Velocity accumulators
+        double m_accumX;
+        double m_accumY;
 };
 
 #endif

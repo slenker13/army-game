@@ -58,7 +58,7 @@ int main (int argc, char* args[]) {
     if (!Expedition::init()) {
         printf("ERROR: Failed to initialize.\n");
     } else {
-        if (!g_window.init("Game Window", SCREEN_WIDTH, SCREEN_HEIGHT, false, false)) {
+        if (!g_window.init("Game Window", SCREEN_WIDTH, SCREEN_HEIGHT, false, true)) {
             printf("ERROR: Window initialization failed.\n");
         } else {
             if (!loadMedia()) {

@@ -6,7 +6,7 @@
 // Define static variables
 std::vector<Bullet*> Bullet::bulletList;
 
-Bullet::Bullet(int x, int y, double angle) : Entity(EntityType::bullet, x, y, 5, 5) {
+Bullet::Bullet(int x, int y, double angle) : Entity(EntityType::bullet, x, y, 5, 5), m_accumX(0.0), m_accumY(0.0) {
     // Calculate X and Y velocities from angle
     double angleRads = angle * M_PI / 180.0;
     m_velX = (double)BULLET_VEL * cos(angleRads);
@@ -22,7 +22,13 @@ void Bullet::render(int camX, int camY, SDL_Renderer* renderer) {
 
 void Bullet::move(int levelWidth, int levelHeight, std::vector<Entity*> entities) {
     // Move left or right
-    m_posX = round(m_posX + m_velX);
+    int xMove = floor(m_velX);
+    m_accumX += m_velX - xMove;
+    if (m_accumX >= 1.0) {
+        xMove += floor(m_accumX);
+        m_accumX -= floor(m_accumX);
+    }
+    m_posX += xMove;
     m_collider.x = m_posX;
 
     // Keep in bounds
@@ -31,7 +37,13 @@ void Bullet::move(int levelWidth, int levelHeight, std::vector<Entity*> entities
     }
 
     // Move the dot up or down
-    m_posY = round(m_posY + m_velY);
+    int yMove = floor(m_velY);
+    m_accumY += m_velY - yMove;
+    if (m_accumY >= 1.0) {
+        yMove += floor(m_accumY);
+        m_accumY -= floor(m_accumY);
+    }
+    m_posY += yMove;
     m_collider.y = m_posY;
 
     // Keep in bounds
