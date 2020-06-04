@@ -9,17 +9,36 @@ Enemy::Enemy(int x, int y) : Actor(EntityType::enemy, x, y) {}
 Enemy::Enemy(int x, int y, Expedition::Texture* texture) : Actor(EntityType::enemy, x, y, texture) {}
 
 void Enemy::move(int levelWidth, int levelHeight, std::vector<Entity*> entities) {
-    // m_velX = 2;
-    // m_velY = 2;
+    // Get player coords
+    Entity* player = entities.at(0);
+    int playerX = player->getPosX() + player->getWidth() / 2;
+    int playerY = player->getPosY() + player->getHeight() / 2;
+
+    // Get enemy center coordinates
+    int centerX = m_posX + m_width / 2;
+    int centerY = m_posY + m_height / 2;
+
+    // Get angle to player and calulate velocities
+    double angle = atan2(playerY - centerY, playerX - centerX);
+    m_velX = (double)ENEMY_VEL * cos(angle);
+    m_velY = (double)ENEMY_VEL * sin(angle);
 
     // Move left or right
-    m_posX += m_velX;
+    int xMove = floor(m_velX);
+    double oldAccumX = m_accumX;
+    m_accumX += m_velX - xMove;
+    if (m_accumX >= 1.0) {
+        xMove += floor(m_accumX);
+        m_accumX -= floor(m_accumX);
+    }
+    m_posX += xMove;
     m_collider.x = m_posX;
 
     // Keep in bounds
     if (m_posX < 0 || m_posX + m_width > levelWidth) {
-        m_posX -= m_velX;
+        m_posX -= xMove;
         m_collider.x = m_posX;
+        m_accumX = oldAccumX;
     }
     // Check collision
     for (Entity* other : entities) {
@@ -29,12 +48,14 @@ void Enemy::move(int levelWidth, int levelHeight, std::vector<Entity*> entities)
                     
                     break;
                 case EntityType::wall:
-                    m_posX -= m_velX;
+                    m_posX -= xMove;
                     m_collider.x = m_posX;
+                    m_accumX = oldAccumX;
                     break;
                 case EntityType::enemy:
-                    m_posX -= m_velX;
+                    m_posX -= xMove;
                     m_collider.x = m_posX;
+                    m_accumX = oldAccumX;
                     break;
                 case EntityType::bullet:
                     break;
@@ -43,13 +64,21 @@ void Enemy::move(int levelWidth, int levelHeight, std::vector<Entity*> entities)
     }
 
     // Move up or down
-    m_posY += m_velY;
+    int yMove = floor(m_velY);
+    double oldAccumY = m_accumY;
+    m_accumY += m_velY - yMove;
+    if (m_accumY >= 1.0) {
+        yMove += floor(m_accumY);
+        m_accumY -= floor(m_accumY);
+    }
+    m_posY += yMove;
     m_collider.y = m_posY;
 
     // Keep in bounds
     if (m_posY < 0 || m_posY + m_height > levelHeight) {
-        m_posY -= m_velY;
+        m_posY -= yMove;
         m_collider.y = m_posY;
+        m_accumY = oldAccumY;
     }
     // Check collision
     for (Entity* other : entities) {
@@ -59,12 +88,14 @@ void Enemy::move(int levelWidth, int levelHeight, std::vector<Entity*> entities)
                     printf("PLAYER COLLISION\n");
                     break;
                 case EntityType::wall:
-                    m_posY -= m_velY;
+                    m_posY -= yMove;
                     m_collider.y= m_posY;
+                    m_accumY = oldAccumY;
                     break;
                 case EntityType::enemy:
-                    m_posY -= m_velY;
+                    m_posY -= yMove;
                     m_collider.y = m_posY;
+                    m_accumY = oldAccumY;
                     break;
                 case EntityType::bullet:
                     break;

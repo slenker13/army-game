@@ -6,7 +6,7 @@
 class Enemy : public Actor {
     public:
         // Maximum axis velocity of the enemy
-        static const int ENEMY_VEL = 3;
+        static const int ENEMY_VEL = 2;
 
         // Initialize enemy
         Enemy();

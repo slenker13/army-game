@@ -1,11 +1,11 @@
 #include "Actor.hpp"
 
-Actor::Actor(EntityType type) : Entity(type), m_velX(0), m_velY(0) {}
+Actor::Actor(EntityType type) : Entity(type), m_velX(0.0), m_velY(0.0), m_accumX(0.0), m_accumY(0.0) {}
 
-Actor::Actor(EntityType type, int x, int y) : Entity(type, x, y), m_velX(0), m_velY(0) {}
+Actor::Actor(EntityType type, int x, int y) : Entity(type, x, y), m_velX(0.0), m_velY(0.0), m_accumX(0.0), m_accumY(0.0) {}
 
 Actor::Actor(EntityType type, int x, int y, Expedition::Texture* texture) : 
-    Entity(type, x, y, texture), m_velX(0), m_velY(0) {}
+    Entity(type, x, y, texture), m_velX(0.0), m_velY(0.0), m_accumX(0.0), m_accumY(0.0) {}
 
 // UNUSED
 void Actor::move(int levelWidth, int levelHeight, std::vector<Entity*> entities) {

@@ -96,7 +96,7 @@ int main (int argc, char* args[]) {
                 Wall wall2(1200, 300, 40, 400, black);
                 entityList.push_back(&wall2);
 
-                Enemy* enemy = new Enemy(player.getPosX(), player.getPosY() - 100, g_textureCache.getTexture("data/enemy.png"));
+                Enemy* enemy = new Enemy(player.getPosX(), player.getPosY() - 500, g_textureCache.getTexture("data/enemy.png"));
                 entityList.push_back(enemy);
 
                 // GAME LOOP

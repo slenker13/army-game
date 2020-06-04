@@ -17,8 +17,12 @@ class Actor: public Entity {
 
     protected:
         // Velocity of the actor
-        int m_velX;
-        int m_velY;
+        double m_velX;
+        double m_velY;
+
+        // Velocity accumulators
+        double m_accumX;
+        double m_accumY;
 };
 
 #endif
