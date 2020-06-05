@@ -45,7 +45,7 @@ void Enemy::move(int levelWidth, int levelHeight, std::vector<Entity*> entities)
         if (other != this && Entity::checkCollision(other)) {
             switch (other->getType()) {
                 case EntityType::player:
-                    
+                    other->remove();
                     break;
                 case EntityType::wall:
                     m_posX -= xMove;
@@ -85,7 +85,7 @@ void Enemy::move(int levelWidth, int levelHeight, std::vector<Entity*> entities)
         if (other != this && Entity::checkCollision(other)) {
             switch (other->getType()) {
                 case EntityType::player:
-                    printf("PLAYER COLLISION\n");
+                    other->remove();
                     break;
                 case EntityType::wall:
                     m_posY -= yMove;

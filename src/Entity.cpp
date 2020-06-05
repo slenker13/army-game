@@ -61,6 +61,10 @@ bool Entity::checkCollision(Entity* other) {
     return true;
 }
 
+void Entity::remove() {
+    m_remove = true;
+}
+
 int Entity::getPosX() { return m_posX; }
 int Entity::getPosY() { return m_posY; }
 int Entity::getWidth() { return m_width; }

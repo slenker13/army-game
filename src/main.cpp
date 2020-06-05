@@ -2,6 +2,8 @@
 #include <SDL2/SDL_image.h>
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "Expedition/Expedition.hpp"
 
@@ -9,6 +11,7 @@
 #include "Wall.hpp"
 #include "Bullet.hpp"
 #include "Enemy.hpp"
+#include "Spawner.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 960;
@@ -96,8 +99,20 @@ int main (int argc, char* args[]) {
                 Wall wall2(1200, 300, 40, 400, black);
                 entityList.push_back(&wall2);
 
-                Enemy* enemy = new Enemy(player.getPosX(), player.getPosY() - 500, g_textureCache.getTexture("data/enemy.png"));
-                entityList.push_back(enemy);
+                // Enemy* enemy = new Enemy(player.getPosX(), player.getPosY() - 500, g_textureCache.getTexture("data/enemy.png"));
+                // entityList.push_back(enemy);
+                
+                // Enemy spawner
+                Spawner enemySpawner;
+
+                // Kill counter
+                int killCounter = 0;
+
+                // Random number generator
+                srand(time(NULL));
+
+                // PLayer killed flag
+                bool dead = false;
 
                 // GAME LOOP
                 while (!quit) {
@@ -153,7 +168,14 @@ int main (int argc, char* args[]) {
                             Entity* entity = *entityIt;
                             if (entity->isRemoved()) {
                                 entityIt = entityList.erase(entityIt);
-                                delete entity;
+                                if (entity->getType() == EntityType::player) {
+                                    quit = true;
+                                    dead = true;
+                                } else {
+                                    delete entity;
+                                    killCounter++;
+                                    printf("Kills: %i\n", killCounter);
+                                }
                             } else {
                                 entityIt++;
                             }
@@ -169,6 +191,29 @@ int main (int argc, char* args[]) {
                             } else {
                                 bulletIt++;
                             }
+                        }
+
+                        // Spawn new enemies
+                        if (enemySpawner.spawn()) {
+                            // Randomize location
+                            int width = LEVEL_WIDTH - 10 - 60;
+                            int height = LEVEL_HEIGHT - 10 - 60;
+                            int border = width * 2 + height * 2;
+                            int location = rand() % border;
+                            Enemy* e = nullptr;
+
+                            if (location >= 0 && location < width) {                                        // top
+                                e = new Enemy(location + 10, 10, g_textureCache.getTexture("data/enemy.png"));
+                            } else if (location >= width && location < width + height) {                    // right
+                                e = new Enemy(LEVEL_WIDTH - 60, location - width + 10, g_textureCache.getTexture("data/enemy.png"));
+                            } else if (location >= width + height && location < width + height + width) {   // bottom
+                                e = new Enemy(location - height - width + 10, LEVEL_HEIGHT - 60, g_textureCache.getTexture("data/enemy.png"));
+                            } else {                                                                        // left
+                                e = new Enemy(10, location - width - height - width + 10, g_textureCache.getTexture("data/enemy.png"));
+                            }
+
+                            // Spawn enemy
+                            entityList.push_back(e);
                         }
 
                         // Decrease accumulator
@@ -209,6 +254,10 @@ int main (int argc, char* args[]) {
                     // Update screen
                     g_window.render();
                     /****************/
+                }
+
+                if (dead) {
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "You Died", NULL);
                 }
             }
         }

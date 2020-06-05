@@ -30,6 +30,9 @@ class Entity {
         // Checks the collision between this and another entity
         bool checkCollision(Entity* other);
 
+        // Sets remove flag
+        void remove();
+
         // Getters
         int getPosX();
         int getPosY();
